@@ -5,12 +5,14 @@ https://github.com/moscajs/aedes/issues/647
 */
 
 const express = require('express');
-const app = express();
-
 const aedes = require('aedes')();
+const ws = require('websocket-stream');
 const server = require('net').createServer(aedes.handle);
 
-const ws = require('websocket-stream');
+const app = express();
+app.use(express.static('public'))
+
+
 
 const ports = {
     mqtt : 1883,
