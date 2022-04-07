@@ -3,6 +3,7 @@ reference
 https://github.com/moscajs/aedes/issues/647
 
 */
+require('dotenv').config()
 
 const express = require('express');
 const aedes = require('aedes')();
@@ -49,7 +50,7 @@ wsServer.listen(ports.ws, host, function () {
 })
 // -------- non-SSL websocket port -------------
 
-
+console.log("server_config",server_config);
 
 // -------- SSL websocket port -------------
 if (server_config.HTTPS == 'https') {
