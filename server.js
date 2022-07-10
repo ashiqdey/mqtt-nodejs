@@ -8,6 +8,8 @@ require('dotenv').config()
 const express = require('express');
 const aedes = require('aedes')();
 const ws = require('websocket-stream');
+const fs = require("fs");
+const https = require("https");
 const server = require('net').createServer(aedes.handle);
 
 const app = express();
@@ -54,8 +56,7 @@ console.log("server_config",server_config);
 
 // -------- SSL websocket port -------------
 if (server_config.HTTPS == 'https') {
-    const fs = require("fs");
-    const https = require("https");
+    
 
     const options = {
         key: fs.readFileSync(server_config.SSL_KEY),
