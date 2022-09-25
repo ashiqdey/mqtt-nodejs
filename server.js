@@ -1,7 +1,6 @@
 /*
 reference
 https://github.com/moscajs/aedes/issues/647
-
 */
 require('dotenv').config()
 
@@ -18,25 +17,47 @@ app.use(express.static('public'))
 
 
 const ports = {
-    mqtt : 1883,
-    ws : 8080,
-    wss : 8081,
+    mqtt: 1883,
+    ws: 8080,
+    wss: 8081,
 }
 
 
 
 const server_config = {
+    USERNAME: process.env.MQ_USERNAME,
+    PASSWORD: process.env.MQ_PASSWORD,
+
     HTTPS: process.env.HTTPS,
 
     SSL_KEY: process.env.SSL_KEY,
     SSL_CRT: process.env.SSL_CRT,
     SSL_CAB: process.env.SSL_CAB,
+
+    HOST: '0.0.0.0' // localhost
 }
 
 
 
+// -------- authenticate the connecting client -------------
+aedes.authenticate = (client, username, password, callback) => {
+    if (!username || !password) {
+        return callback(new Error('Credentials missing'), false)
+    }
 
-const host = '0.0.0.0' // localhost
+    password = Buffer.from(password, 'base64').toString();
+    if (username === server_config.USERNAME && password === server_config.PASSWORD) {
+        return callback(null, true);
+    }
+
+    // console.log('Error ! Authentication failed.', { username, password })
+    return callback(new Error('Invalid credentials.'), false)
+}
+// -------- authenticate the connecting client -------------
+
+
+
+
 
 
 server.listen(ports.mqtt, function () {
@@ -46,17 +67,19 @@ server.listen(ports.mqtt, function () {
 
 // -------- non-SSL websocket port -------------
 var wsServer = require('http').createServer(app)
-ws.createServer({ server: wsServer}, aedes.handle)
-wsServer.listen(ports.ws, host, function () {
+ws.createServer({ server: wsServer }, aedes.handle)
+wsServer.listen(ports.ws, server_config.HOST, function () {
     console.log('WS server listening on port', ports.ws)
 })
 // -------- non-SSL websocket port -------------
 
-console.log("server_config",server_config);
+console.log("server_config", server_config);
+
+
 
 // -------- SSL websocket port -------------
 if (server_config.HTTPS == 'https') {
-    
+
 
     const options = {
         key: fs.readFileSync(server_config.SSL_KEY),
@@ -67,8 +90,8 @@ if (server_config.HTTPS == 'https') {
     }
     const wsSslServer = https.createServer(options, app);
 
-    ws.createServer({ server: wsSslServer}, aedes.handle)
-    wsSslServer.listen(ports.wss, host, function () {
+    ws.createServer({ server: wsSslServer }, aedes.handle)
+    wsSslServer.listen(ports.wss, server_config.HOST, function () {
         console.log('WSS server listening on port', ports.wss)
     })
 }
@@ -108,8 +131,8 @@ aedes.on('unsubscribe', function (subscriptions, client) {
 })
 
 // emitted when a client publishes a message packet on the topic
-aedes.on('publish', async function (packet, client,topic) {
-	// console.log(`[MESSAGE_PUBLISHED] ${packet.topic} ${topic}`);
+aedes.on('publish', async function (packet, client, topic) {
+    // console.log(`[MESSAGE_PUBLISHED] ${packet.topic} ${topic}`);
 
     if (client) {
         console.log(`[MESSAGE_PUBLISHED] ${packet.topic}`)
