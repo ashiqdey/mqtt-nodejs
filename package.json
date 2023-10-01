@@ -1,6 +1,6 @@
 {
-  "name": "typescript-node",
-  "version": "1.0.0",
+  "name": "nodejs-mqtt-broker",
+  "version": "2.0.0",
   "description": "",
   "main": "dist/server.js",
   "scripts": {
