@@ -1,3 +1,2 @@
 # mqtt-broker-nodejs
-
-A self hosted mqtt broker in node.js
+ A self hosted mqtt broker in node.js
