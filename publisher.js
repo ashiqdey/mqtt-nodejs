@@ -6,9 +6,12 @@ client.on('connect', () => {
   client.subscribe('my-topic');
 
   setInterval(function () {
-        client.publish('my-topic', JSON.stringify({payload:"Hello mqtt",date:new Date().getSeconds()}));
-        console.log('Message Sent');
-    }, 5000);
+    client.publish(
+      'my-topic',
+      JSON.stringify({ payload: 'Hello mqtt', date: new Date().getSeconds() })
+    );
+    console.log('Message Sent');
+  }, 5000);
 });
 
 client.on('message', (topic, message) => {
