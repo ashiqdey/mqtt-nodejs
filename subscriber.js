@@ -1,9 +1,11 @@
-var mqtt = require('mqtt')
-var client = mqtt.connect('mqtt://192.168.43.116')
-client.on('connect', function () {
-    client.subscribe('grocered/chat')
-})
-client.on('message', function (topic, message) {
-    context = message.toString();
-    console.log(context)
-})
+const mqtt = require('mqtt');
+const client = mqtt.connect('mqtt://localhost:1883', { clientId: 'my-client' });
+
+client.on('connect', () => {
+  console.log('Connected to MQTT broker');
+  client.subscribe('my-topic');
+});
+
+client.on('message', (topic, message) => {
+  console.log(`Received message on topic ${topic}: ${message.toString()}`);
+});
