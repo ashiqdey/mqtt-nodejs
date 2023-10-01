@@ -1,9 +1,11 @@
 const mqtt = require('mqtt');
-const client = mqtt.connect('mqtt://localhost:1883', { 
+const client = mqtt.connect('mqtt://localhost:1883', {
+// const client = mqtt.connect('ws://localhost:8080', {
   clientId: 'my-client',
-  username:'username',
-  password:'password',
- });
+  username: 'username',
+  password: 'password',
+});
+
 
 client.on('connect', () => {
   console.log('Connected to MQTT broker');
@@ -21,3 +23,4 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
   console.log(`Received message on topic ${topic}: ${message.toString()}`);
 });
+
